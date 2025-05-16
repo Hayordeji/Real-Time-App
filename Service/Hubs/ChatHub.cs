@@ -36,13 +36,18 @@ namespace Service.Hubs
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await Clients.All.ReceiveMessage("System", "Welcome to the chat!");
+            await Clients.AllExcept(Context.ConnectionId).ReceiveMessage("System", "A user has joined to the chat!");
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await Clients.All.ReceiveMessage("System", "A user has left the chat.");
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task OnReconnectedAsync()
+        {
+            await Clients.All.ReceiveMessage("System", "A user has reconnected to the chat.");
         }
     }
 }

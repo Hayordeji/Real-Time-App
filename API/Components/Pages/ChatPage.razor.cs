@@ -30,8 +30,8 @@ namespace API.Components.Pages
 
                 try
                 {
-                    await hubConnection.StartAsync();
-                    Console.WriteLine("Reconnected.");
+                    //START THE CONNECTION AGAIN
+                    //await hubConnection.StartAsync();
                     await InvokeAsync(StateHasChanged);
 
                 }
@@ -41,7 +41,6 @@ namespace API.Components.Pages
                     await InvokeAsync(StateHasChanged);
 
                 }
-                await InvokeAsync(StateHasChanged);
             };
 
             hubConnection.Reconnected += (connectionId) =>
@@ -53,13 +52,16 @@ namespace API.Components.Pages
 
             hubConnection.Closed += async (error) =>
             {
-                messages.Add("Connection lost. Attempting to reconnect...");
 
             };
 
+            //STARTS THE CONNECTION
             await hubConnection.StartAsync();
 
+           
+
         }
+
 
         // This method is called when the user clicks the "Send" button
         private async Task SendMessage()
