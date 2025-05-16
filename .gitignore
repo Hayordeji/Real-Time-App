@@ -1,0 +1,16 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/AI_Chatbot/bin/Debug/net8.0
+/AI_Chatbot/obj
+/AI_Chatbot/Properties
+/AI_Chatbot/appsettings.json
+/AI_Chatbot/appsettings.Development.json
+/Data/bin/Debug/net8.0
+*.dll
+/Data/obj
+/Repository/obj
+/Service/bin/Debug/net8.0
+/Service/obj
