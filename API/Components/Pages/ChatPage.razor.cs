@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 
-namespace AI_Chatbot.Components.Pages
+namespace API.Components.Pages
 {
-    public partial class AIChatbot
+    public partial class ChatPage
     {
         private string user = string.Empty;
         private string message = string.Empty;
@@ -30,9 +30,9 @@ namespace AI_Chatbot.Components.Pages
 
                 try
                 {
-                     await hubConnection.StartAsync();
-                     Console.WriteLine("Reconnected.");
-                     await InvokeAsync(StateHasChanged);
+                    await hubConnection.StartAsync();
+                    Console.WriteLine("Reconnected.");
+                    await InvokeAsync(StateHasChanged);
 
                 }
                 catch (Exception ex)
@@ -50,11 +50,11 @@ namespace AI_Chatbot.Components.Pages
                 InvokeAsync(StateHasChanged);
                 return Task.CompletedTask;
             };
-            
+
             hubConnection.Closed += async (error) =>
             {
                 messages.Add("Connection lost. Attempting to reconnect...");
-                
+
             };
 
             await hubConnection.StartAsync();
@@ -85,7 +85,6 @@ namespace AI_Chatbot.Components.Pages
             if (hubConnection?.State == HubConnectionState.Disconnected)
             {
                 await hubConnection.StartAsync();
-                messages.Add("Reconnected!");
             }
         }
 
@@ -99,8 +98,5 @@ namespace AI_Chatbot.Components.Pages
                 messages.Add("Disconnected!");
             }
         }
-
-
-
     }
 }

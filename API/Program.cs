@@ -1,5 +1,4 @@
-using AI_Chatbot.Components;
-using AI_Chatbot.Components.Pages;
+using API.Components;
 using Microsoft.AspNetCore.ResponseCompression;
 using Service.Hubs;
 using System;

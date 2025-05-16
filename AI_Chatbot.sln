@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "AI_Chatbot\API.csproj", "{6E9CD73B-EAE3-4BFA-BC37-AF4A5A7FB9F7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{51DAD772-883E-4756-9F97-4D715CCB593C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{D0BE415D-BD2C-4506-A582-34C52A52462D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{0839F71E-A259-475A-8485-13956A14FD96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{00C06E23-39ED-467C-BE3E-9EEB578B4D8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6E9CD73B-EAE3-4BFA-BC37-AF4A5A7FB9F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E9CD73B-EAE3-4BFA-BC37-AF4A5A7FB9F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E9CD73B-EAE3-4BFA-BC37-AF4A5A7FB9F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E9CD73B-EAE3-4BFA-BC37-AF4A5A7FB9F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51DAD772-883E-4756-9F97-4D715CCB593C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51DAD772-883E-4756-9F97-4D715CCB593C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51DAD772-883E-4756-9F97-4D715CCB593C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{0839F71E-A259-475A-8485-13956A14FD96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0839F71E-A259-475A-8485-13956A14FD96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0839F71E-A259-475A-8485-13956A14FD96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C06E23-39ED-467C-BE3E-9EEB578B4D8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C06E23-39ED-467C-BE3E-9EEB578B4D8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C06E23-39ED-467C-BE3E-9EEB578B4D8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C06E23-39ED-467C-BE3E-9EEB578B4D8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
