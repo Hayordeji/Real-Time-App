@@ -20,3 +20,7 @@
 /API/appsettings.Development.json
 /API/Properties/launchSettings.json
 /Repository/bin/Debug/net8.0
+/Client/obj
+/Client/Properties/launchSettings.json
+/Client/appsettings.json
+/Client/appsettings.Development.json
