@@ -1,0 +1,23 @@
+﻿@page "/chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<h3>Chat Room</h3>
+<button @onclick="StopConnection">Start</button>
+<button @onclick="StartConnection">Stop</button>
+
+
+<div>
+    <input @bind="user" placeholder="Name" />
+    <input @bind="message" placeholder="Message" />
+    <button @onclick="SendMessage">Send</button>
+</div>
+
+<ul>
+    @foreach (var msg in messages)
+    {
+        <li>@msg</li>
+    }
+</ul>
