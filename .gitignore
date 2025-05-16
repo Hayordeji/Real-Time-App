@@ -14,3 +14,8 @@
 /Repository/obj
 /Service/bin/Debug/net8.0
 /Service/obj
+/API/bin/Debug/net8.0
+/API/obj
+/API/appsettings.json
+/API/appsettings.Development.json
+/API/Properties/launchSettings.json
