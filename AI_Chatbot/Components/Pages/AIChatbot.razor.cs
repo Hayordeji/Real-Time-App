@@ -42,7 +42,6 @@ namespace AI_Chatbot.Components.Pages
 
                 }
                 await InvokeAsync(StateHasChanged);
-                await return Task.CompletedTask;
             };
 
             hubConnection.Reconnected += (connectionId) =>
