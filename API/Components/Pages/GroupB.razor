@@ -1,11 +1,12 @@
-﻿@page "/chat" 
+﻿@page "/chat/group/b"
 @inject NavigationManager Navigation
-@rendermode InteractiveServer
 @using Microsoft.AspNetCore.SignalR.Client
+
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Group A - Chat</title>
+    <title>Group B - Chat</title>
     <style>
         /* Reset & base */
         * {
@@ -93,7 +94,7 @@
         .messages {
             flex: 1;
             padding: 20px 24px;
-            overflow-y: scroll;
+            overflow-y: auto;
             background: #e9efff;
             display: flex;
             flex-direction: column;
@@ -168,8 +169,8 @@
     </style>
 </head>
 <body>
-    <div class="chat-container" role="main" aria-label="Group A Chat">
-        <div class="chat-header">Group A</div>
+    <div class="chat-container" role="main" aria-label="Group B Chat">
+        <div class="chat-header">Group B</div>
         <div class="top-bar">
             <input name="username" @bind="user" placeholder="Name" aria-label="Username input" />
             <button class="btn-leave" @onclick="LeaveGroup" aria-label="Leave Group Button">Leave Group</button>
@@ -182,10 +183,12 @@
         </div>
         <div class="input-area">
             <input @bind="message" placeholder="Message" />
-            <button class="btn-send" aria-label="Send Message" @onclick="SendMessage">Send</button>
+            <button class="btn-send" aria-label="Send Message" @onclick="SendMessageToGroup">Send</button>
         </div>
-
+       
     </div>
 </body>
+
+
 
 

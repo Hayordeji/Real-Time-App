@@ -12,6 +12,8 @@ namespace Service.Interface
         public Task OnConnectedAsync(string method, string user, string message);
         public Task OnDisconnectedAsync(string method, string user, string message);
         public Task OnReconnectedAsync(string method, string user, string message);
+        public Task AddToGroup(string groupName, string connectionId);
+        public Task RemoveFromGroup(string groupName, string connectionId); 
 
     }
 }

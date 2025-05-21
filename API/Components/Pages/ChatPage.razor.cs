@@ -12,8 +12,9 @@ namespace API.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/chatHub"))
+                .WithUrl(Navigation.ToAbsoluteUri("/ChatHub"))
                 .WithAutomaticReconnect()
+                .AddMessagePackProtocol()
                 .Build();
 
             hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -32,15 +33,14 @@ namespace API.Components.Pages
                 {
                     //START THE CONNECTION AGAIN
                     //await hubConnection.StartAsync();
-                    await InvokeAsync(StateHasChanged);
 
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Reconnect failed: " + ex.Message);
-                    await InvokeAsync(StateHasChanged);
 
                 }
+                await InvokeAsync(StateHasChanged);
             };
 
             hubConnection.Reconnected += (connectionId) =>
@@ -99,6 +99,15 @@ namespace API.Components.Pages
                 //TEST IF ADDING THE MESSAGE AT THE TOP WILL STILL WORK
                 messages.Add("Disconnected!");
             }
+        }
+
+        private async Task JoinGroup()
+        {
+            await hubConnection.SendAsync("JoinGroup", "Group A");
+        }
+        private async Task LeaveGroup()
+        {
+            await hubConnection.SendAsync("LeaveGroup", "Group A");
         }
     }
 }

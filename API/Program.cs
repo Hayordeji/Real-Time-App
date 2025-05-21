@@ -1,7 +1,12 @@
 using API.Components;
+using API.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.IdentityModel.Tokens;
 using Service.Hubs;
+using Service.Implementation;
+using Service.Interface;
 using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IChatService, ChatService>();
+
 builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;  // Useful for debugging
@@ -17,12 +26,29 @@ builder.Services.AddSignalR(options =>
     options.ClientTimeoutInterval = TimeSpan.FromSeconds(30); // Client disconnects if no activity for 30 seconds
     options.HandshakeTimeout = TimeSpan.FromSeconds(15);  // Time allowed to complete the 	initial handshake
     options.MaximumParallelInvocationsPerClient = 5;  // Limit parallel client invocations
-});
+}).AddMessagePackProtocol();
+
+
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         ["application/octet-stream"]);
 });
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
+        };
+    });
 //builder.Services.AddCors(options =>
 //{
 //    options.AddDefaultPolicy(policy =>
@@ -48,9 +74,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.MapRazorPages();
+app.UseAuthentication();
+app.UseAuthorization();
 //app.UseCors();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/ChatHub");
+app.MapHub<GroupAHub>("/GroupAHub");
+app.MapHub<GroupBHub>("/GroupBHub");
+
 app.UseResponseCompression();
 app.Run();

@@ -1,7 +1,8 @@
-﻿@page "/chat" 
+﻿@page "/chat/group/a"
 @inject NavigationManager Navigation
-@rendermode InteractiveServer
 @using Microsoft.AspNetCore.SignalR.Client
+
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -182,10 +183,11 @@
         </div>
         <div class="input-area">
             <input @bind="message" placeholder="Message" />
-            <button class="btn-send" aria-label="Send Message" @onclick="SendMessage">Send</button>
+            <button class="btn-send" aria-label="Send Message" @onclick="SendMessageToGroup">Send</button>
         </div>
 
     </div>
 </body>
+
 
 
