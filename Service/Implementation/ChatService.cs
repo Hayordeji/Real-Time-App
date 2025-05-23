@@ -1,4 +1,5 @@
-﻿using Service.Interface;
+﻿using Repository.Interface;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace Service.Implementation
 {
     public class ChatService : IChatService
     {
+        private readonly IMessageRepo _messageRepo;
+        public ChatService(IMessageRepo messageRepo)
+        {
+            _messageRepo = messageRepo;
+        }
         public async Task AddToGroup(string groupName, string connectionId)
         {
             await Task.CompletedTask;
@@ -38,5 +44,23 @@ namespace Service.Implementation
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> AddPersonalMessage(string senderName, string receipentName, string message)
+        {
+            var isAdded = await _messageRepo.CreatePersonalMessage(message, senderName, receipentName);
+            if (!isAdded )
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        //public async Task<bool> AddGroupMessage(string user, string groupName, string message)
+        //{
+        //    var isAdded = await _messageRepo.CreateGroupMessage(message,user,groupName, );
+        //}
     }
 }

@@ -1,0 +1,74 @@
+﻿@page "/auth/register"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+@using Service.DTO.Auth
+@using Service.Interface
+@* <head> *@
+@*     <meta charset="UTF-8" /> *@
+@*     <meta name="viewport" content="width=device-width, initial-scale=1" /> *@
+@*     <title>Register</title> *@
+@*     <style> *@
+      
+@*     </style> *@
+@* </head> *@
+
+
+@if (isRegistered)
+{
+    <div class="glass-card glass-card-secondary text-center animate-fade-in">
+        <h2 class="feature-title text-light mb-md">🎉 Registration Successful!</h2>
+        <p class="text-muted">Your account has been successfully created.</p>
+    </div>
+}
+<EditForm Model="registerModel" OnValidSubmit="HandleRegister">
+    <div class="app-container">
+        <div class="glass-card glass-card-primary text-center">
+            <h1 class="page-title mb-xl">Register</h1>
+        </div>
+        <div class="content-area">
+            <div class="glass-card">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <InputText name="username" @bind-Value="registerModel.Username" placeholder="Username" class="form-input" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <InputText name="password" @bind-Value="registerModel.Password" type="password" placeholder="Password" class="form-input" />
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    private RegisterDto registerModel = new();
+    private bool isRegistered = false;
+    private const string TokenKey = "jwt_token";
+
+    [Inject]
+    private IAuthService? _authService { get; set; }
+    private async Task HandleRegister()
+    {
+        await _authService.LogoutAsync();
+        var result = await _authService.RegisterAsync(registerModel.Username,registerModel.Password);
+        if (result)
+        {
+            await Task.CompletedTask;
+            isRegistered = true;
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(5000);
+            Navigation.NavigateTo("/chatsections");
+        }
+        else
+        {
+            throw new Exception("Registration failed");
+        }
+    }
+
+    
+}

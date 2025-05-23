@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Service.Interface;
@@ -9,37 +10,62 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Hubs
+namespace API.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IChatService _chatService;
         private readonly ILogger<ChatHub> _logger;
+        private List<MessageReceipient> _receipients;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ChatHub(IChatService chatService, ILogger<ChatHub> logger)
+        public ChatHub(IChatService chatService, ILogger<ChatHub> logger, UserManager<AppUser> userManager)
         {
             _chatService = chatService;
             _logger = logger;
-
+            _receipients = new List<MessageReceipient>();
+            _userManager = userManager;
         }
 
-        public async Task SendMessage(string user, string message)
+        public async Task SendPersonalMessage(string message)
         {
-             _logger.LogInformation($"Message from {user} : {message}");
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+
+            string userName = Context.UserIdentifier;
+            if (userName == null)
+            {
+                throw new Exception("User not found");
+            }
+            var connectedUser = await _userManager.FindByNameAsync(userName);
+            await Clients.All.SendAsync("ReceiveMessage", connectedUser.UserName, message);
+            _logger.LogInformation($"Message from {connectedUser.UserName} : {message}");
+
+            //await _chatService.AddPersonalMessage(user, "ReceipientName", message);
+            //await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task SendMessageToGroup(string user, string message, string groupName)
+        public async Task SendMessageToGroup(string message, string groupName)
         {
-            _logger.LogInformation($"Message from {user} : {message}");
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", user, message);
+            string userName = Context.UserIdentifier;
+            if (userName == null)
+            {
+                throw new Exception("User not found");
+            }
+            var connectedUser = await _userManager.FindByNameAsync(userName);
+            _logger.LogInformation($"Message from {connectedUser.UserName} : {message}");
+            //await _chatService
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", connectedUser.UserName, message);
+            //await _chatService.AddGroupMessage(user,groupName,message);
         }
 
         public async Task JoinGroup(string groupName)
         {
             await _chatService.AddToGroup(groupName, Context.ConnectionId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            _receipients.Add(new MessageReceipient
+            {
+                ConnectionId = Context.ConnectionId  
+            });
             await Clients.GroupExcept(groupName, Context.ConnectionId).SendAsync("ReceiveMessage", "System", $" A user has joined {groupName}");
         }
 

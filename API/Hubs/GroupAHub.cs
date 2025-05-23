@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Service.Hubs;
 using Service.Interface;
 
 namespace API.Hubs

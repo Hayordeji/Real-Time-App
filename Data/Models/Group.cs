@@ -19,6 +19,7 @@ namespace Data.Models
         public string? CreatedBy { get; set; }
         public bool IsPublic { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
-        public virtual ICollection<GroupMember> Members { get; set; } = new HashSet<GroupMember>();
+
+        public List<GroupMember> GroupMembers = new List<GroupMember>();
     }
 }

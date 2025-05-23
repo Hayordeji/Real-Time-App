@@ -2,59 +2,20 @@
 
 <PageTitle>Home</PageTitle>
 
-<style>
-    .home-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh;
-        background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
-        border-radius: 16px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-        padding: 40px 20px;
-        margin-top: 40px;
-    }
-
-    .home-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #2d3748;
-        margin-bottom: 32px;
-        letter-spacing: 1px;
-        text-align: center;
-    }
-
-    .chat-buttons {
-        display: flex;
-        gap: 24px;
-        margin-top: 16px;
-    }
-
-    .chat-btn {
-        padding: 16px 36px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border: none;
-        border-radius: 8px;
-        background: #4f8cff;
-        color: #fff;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.2s;
-        box-shadow: 0 2px 8px rgba(79,140,255,0.08);
-    }
-
-    .chat-btn:hover {
-        background: #2563eb;
-        transform: translateY(-2px) scale(1.04);
-    }
-</style>
-
-<div class="home-container">
-    <div class="home-title">Real Time Chat App!</div>
-    <div class="chat-buttons">
-        <button class="chat-btn"><a href="/chat">Private Chat</a></button>
-        <button class="chat-btn"><a href="/chat/group/a">Group A</a></button>
-        <button class="chat-btn"><a href="/chat/group/b">Group B</a></button>
+<div class="app-container">
+    <div class="glass-card glass-card-primary text-center">
+        <h1 class="page-title mb-xl">Real Time Chat App!</h1>
+    </div>
+    <div class="content-area">
+        <div class="glass-card text-center">
+            <div class="flex justify-center items-center gap-lg">
+                <a href="/auth/register">
+                    <button class="btn btn-primary">Register</button>
+                </a>
+                <a href="/auth/login">
+                    <button class="btn btn-secondary">Login</button>
+                </a>
+            </div>
+        </div>
     </div>
 </div>

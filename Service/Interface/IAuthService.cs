@@ -9,11 +9,8 @@ namespace Service.Interface
     public interface IAuthService
     {
         public Task<bool> RegisterAsync(string username, string password);
-        public  Task<bool> LoginAsync(string username, string password);
-        public Task<string?> GetTokenAsync();
-        public  Task LogoutAsync();
-
-
+        public Task<string> LoginAsync(string username, string password);
+        public Task LogoutAsync();
 
     }
 }

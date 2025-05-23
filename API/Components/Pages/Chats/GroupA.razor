@@ -1,0 +1,430 @@
+﻿@page "/chat/group/a"
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Http.Connections
+@using Microsoft.AspNetCore.SignalR.Client
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+
+    body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f5f5;
+    height: 100vh;
+    overflow: hidden;
+    }
+
+    /* Glass card styling */
+    .glass-card {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-card-primary {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+    }
+
+    .text-center {
+    text-align: center;
+    }
+
+    .page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    padding: 20px;
+    }
+
+    .mb-xl {
+    margin-bottom: 20px;
+    }
+
+    .top-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    margin: 0 20px 20px;
+    border-radius: 2px;
+    }
+
+    .message-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    }
+
+    .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
+    margin-bottom: 80px; /* Space for fixed input */
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    }
+
+    .message {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    }
+
+    .message:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .message-username {
+    position: absolute;
+    top: -22px;
+    right: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Sent messages (right side) */
+    .message.sent {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-bottom-right-radius: 6px;
+    margin-left: auto;
+    }
+
+    .message.sent::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-left-color: #0056b3;
+    border-bottom: none;
+    border-right: none;
+    }
+
+    /* Received messages (left side) */
+    .message.received {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 6px;
+    margin-right: auto;
+    margin-top: 50px;
+    }
+
+    .message.received::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-right-color: rgba(255, 255, 255, 0.9);
+    border-bottom: none;
+    border-left: none;
+    }
+
+    .message.received .message-username {
+    background: rgba(248, 249, 250, 0.95);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.2);
+    right: 12px;
+    }
+
+    /* Message metadata */
+    .message-time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+    text-align: right;
+    }
+
+    .message.received .message-time {
+    text-align: left;
+    }
+
+    /* Fixed message form styles */
+    .message-form-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    }
+
+    .message-form-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #d0d0d0;
+    border-radius: 24px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    background: #f8f9fa;
+    }
+
+    .message-form-input input:focus {
+    border-color: #007bff;
+    background: white;
+    }
+
+    .message-form-input input::placeholder {
+    color: #888;
+    }
+
+    .btn-secondary {
+    padding: 12px 24px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+    background: #0056b3;
+    transform: translateY(-1px);
+    }
+
+    .btn-secondary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    }
+
+    /* Responsive design */
+
+</style>
+<body>
+    <div class="glass-card glass-card-primary text-center" role="main" aria-label="Group A Chat">
+        <div class="page-title mb-xl">Group A</div>
+        <div class="top-bar"></div>
+        <div class="message-container">
+            <div class="messages" aria-live="polite" aria-relevant="additions" role="log" tabindex="0">
+                <div class="message received" role="article" aria-label="Received message">
+                    <div>Hello! How are you doing today?</div>
+                    <div class="message-time">10:30 AM</div>
+                </div>
+
+                @foreach (var msg in messages)
+                {
+                    @if (msg.userName == "System")
+                    {
+                        <div class="message received" role="article" aria-label="Received message">
+                            <div>@msg.userMessage</div>
+                            <div class="message-time">@DateTime.Now.ToString("h:mm tt")</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message sent" role="article" aria-label="Sent message">
+                            <div>@msg.userMessage</div>
+                            <div class="message-time">@DateTime.Now.ToString("h:mm tt")</div>
+                        </div>
+                    }
+                }
+                @* @foreach (var msg in receivedMessages) *@
+                @* { *@
+                @*     <div class="message sent" role="article" aria-label="Sent message"> *@
+
+                @*         <div>@msg.userMessage</div> *@
+                @*         <div class="message-time">@DateTime.Now.ToString("h:mm tt")</div> *@
+                @*     </div> *@
+                @* } *@
+            </div>
+            <div class="message-form-input">
+                <input @bind="sentMessage" type="text" @bind:event="oninput" placeholder="Message" aria-label="Type a message" autocomplete="off" />
+                <button class="btn-secondary" aria-label="Send Message" @onclick="SendMessageToGroup" disabled="@string.IsNullOrWhiteSpace(sentMessage)"> Send </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+@code {
+    // private string user = string.Empty;
+    private string sentMessage = string.Empty;
+    private DateTime timeSent = DateTime.UtcNow;
+    // private List<string> messages = new List<string>();
+    private HubConnection? hubConnection;
+    public class UserMessage
+    {
+        public string userName { get; set; } = string.Empty;
+        public string userMessage { get; set; } = string.Empty;
+    }
+    private List<UserMessage> messages = new List<UserMessage>();
+    // private List<UserMessage> receivedMessages = new List<UserMessage>();
+
+
+    [Inject]
+    private IJSRuntime? _js { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/ChatHub"), options =>
+            {
+                options.Transports = HttpTransportType.WebSockets;
+                options.AccessTokenProvider = async () =>
+                {
+                    var token = await _js.InvokeAsync<string>("localStorage.getItem", "jwt_token");
+                    return token;
+                };
+                // options.Headers.Add("Authorization", $"Bearer {token}");
+            })
+            .WithAutomaticReconnect()
+            .AddMessagePackProtocol()
+            .Build();
+
+        //STARTS THE CONNECTION
+        await hubConnection.StartAsync();
+
+        await JoinGroup("Group A");
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var newUserMessage = new UserMessage();
+            newUserMessage.userName = user;
+            newUserMessage.userMessage = message;
+            // = user;
+            // string userMessage = message;
+            var encodedMsg = $"{user}: {message}";
+            messages.Add(newUserMessage);
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.Reconnecting += async (error) =>
+        {
+            var systemMessage = new UserMessage
+                {
+                    userMessage = "Attempting to reconnect...",
+                    userName = "System"
+                };
+            messages.Add(systemMessage);
+            await Task.Delay(500);
+
+            try
+            {
+                //START THE CONNECTION AGAIN
+                //await hubConnection.StartAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Reconnect failed: " + ex.Message);
+
+            }
+            await InvokeAsync(StateHasChanged);
+        };
+
+        hubConnection.Reconnected += (connectionId) =>
+        {
+            var systemMessage = new UserMessage
+                {
+                    userMessage = "Reconnected Successfully",
+                    userName = "System"
+                };
+            messages.Add(systemMessage);
+            InvokeAsync(StateHasChanged);
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Closed += async (error) =>
+        {
+
+        };
+
+
+
+
+
+    }
+
+    private async Task SendMessageToGroup()
+    {
+        await hubConnection.SendAsync("SendMessageToGroup", sentMessage, "Group A");
+        sentMessage = string.Empty;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    // This method is called when the component is disposed
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    // This method is called when the user clicks the "Start" button
+    private async Task StartConnection()
+    {
+        if (hubConnection?.State == HubConnectionState.Disconnected)
+        {
+            await hubConnection.StartAsync();
+        }
+    }
+
+    // / This method is called when the user clicks the "Stop" button
+    private async Task StopConnection()
+    {
+        if (hubConnection?.State == HubConnectionState.Connected)
+        {
+            await hubConnection.StopAsync();
+            //TEST IF ADDING THE MESSAGE AT THE TOP WILL STILL WORK
+            var systemMessage = new UserMessage
+                {
+                    userMessage = "Disconnected",
+                    userName = "System"
+                };
+            messages.Add(systemMessage);
+            // messages.Add("Disconnected!");
+        }
+    }
+
+
+
+    private async Task JoinGroup(string groupName)
+    {
+        await hubConnection.SendAsync("JoinGroup", groupName);
+    }
+    private async Task LeaveGroup(string groupName)
+    {
+        await hubConnection.SendAsync("LeaveGroup", groupName);
+    }
+}
+

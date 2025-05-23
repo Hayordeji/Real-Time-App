@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{51DAD772-883E-4756-9F97-4D715CCB593C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{D0BE415D-BD2C-4506-A582-34C52A52462D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{51DAD772-883E-4756-9F97-4D715CCB593C} = {51DAD772-883E-4756-9F97-4D715CCB593C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{0839F71E-A259-475A-8485-13956A14FD96}"
 EndProject
