@@ -31,13 +31,15 @@ namespace API.Hubs
         public async Task SendPersonalMessage(string message)
         {
 
-            string userName = Context.UserIdentifier;
+            string? userName = Context.UserIdentifier;
             if (userName == null)
             {
                 throw new Exception("User not found");
             }
             var connectedUser = await _userManager.FindByNameAsync(userName);
-            await Clients.All.SendAsync("ReceiveMessage", connectedUser.UserName, message);
+            string connectionId = Context.ConnectionId;
+            
+            await Clients.All.SendAsync("ReceiveMessage", connectedUser.UserName, message, Context.ConnectionId);
             _logger.LogInformation($"Message from {connectedUser.UserName} : {message}");
 
             //await _chatService.AddPersonalMessage(user, "ReceipientName", message);
@@ -54,26 +56,32 @@ namespace API.Hubs
             var connectedUser = await _userManager.FindByNameAsync(userName);
             _logger.LogInformation($"Message from {connectedUser.UserName} : {message}");
             //await _chatService
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", connectedUser.UserName, message);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", connectedUser.UserName, message, Context.ConnectionId);
             //await _chatService.AddGroupMessage(user,groupName,message);
         }
 
         public async Task JoinGroup(string groupName)
         {
+            string userName = Context.UserIdentifier;
+            if (userName == null)
+            {
+                throw new Exception("User not found");
+            }
+            var connectedUser = await _userManager.FindByNameAsync(userName);
             await _chatService.AddToGroup(groupName, Context.ConnectionId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
             _receipients.Add(new MessageReceipient
             {
                 ConnectionId = Context.ConnectionId  
             });
-            await Clients.GroupExcept(groupName, Context.ConnectionId).SendAsync("ReceiveMessage", "System", $" A user has joined {groupName}");
+            await Clients.GroupExcept(groupName, Context.ConnectionId).SendAsync("ReceiveMessage", "System", $"{connectedUser.UserName} has joined the chat", Context.ConnectionId);
         }
 
         public async Task LeaveGroup(string groupName)
         {
             await _chatService.RemoveFromGroup(groupName, Context.ConnectionId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", "System", $" A user has left {groupName}");
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", "System", $" A user has left {groupName}", Context.ConnectionId);
         }
         //public override async Task OnConnectedAsync()
         //{
