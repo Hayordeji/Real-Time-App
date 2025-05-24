@@ -9,9 +9,14 @@ namespace Service.Interface
     public interface IChatService
     {
         public Task ReceiveMessage(string user,  string message);
+        public Task<bool> AddPersonalMessage(string senderName, string receipentName, string message);
+        //public Task<bool> AddGroupMessage(string user,string groupName, string message);
+
         public Task OnConnectedAsync(string method, string user, string message);
         public Task OnDisconnectedAsync(string method, string user, string message);
         public Task OnReconnectedAsync(string method, string user, string message);
+        public Task AddToGroup(string groupName, string connectionId);
+        public Task RemoveFromGroup(string groupName, string connectionId); 
 
     }
 }
