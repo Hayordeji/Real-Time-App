@@ -12,6 +12,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.16" />
     <PackageReference Include="Microsoft.JSInterop" Version="8.0.16" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.54.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.54.0" />
   </ItemGroup>
 
   <ItemGroup>
