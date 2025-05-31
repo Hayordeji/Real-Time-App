@@ -31,6 +31,18 @@ namespace Repository.Implementation
             return newHistory;
         }
 
+        public async Task<bool> DeleteHistory(string connectionId)
+        {
+            var chatHistory = await _context.AIChatHistories.FirstOrDefaultAsync(c => c.ConnectionId == connectionId);
+            if (chatHistory is null)
+            {
+                return false;
+            }
+            _context.AIChatHistories.Remove(chatHistory);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<string?> GetHistoryByConnectionId(string connectionId)
         {
             var history = await _context.AIChatHistories.FindAsync(connectionId);

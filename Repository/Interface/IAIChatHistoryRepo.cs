@@ -12,6 +12,7 @@ namespace Repository.Interface
         Task<AIChatHistory> CreateHistory(string history, string connectionId);
         Task<string?> GetHistoryByConnectionId(string connectionId);
         Task<AIChatHistory> UpdateHistory(string history, string connectionId);
+        Task<bool> DeleteHistory(string connectionId);
 
     }
 }
