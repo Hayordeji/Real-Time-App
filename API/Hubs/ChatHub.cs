@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using Repository.Interface;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,10 @@ namespace API.Hubs
         private readonly UserManager<AppUser> _userManager;
         private readonly IAIClient _aiClient;
         private readonly IJSRuntime _js;
+        private readonly IAIChatHistoryRepo _aiChatHistoryRepo;
         
 
-        public ChatHub(IChatService chatService, ILogger<ChatHub> logger, UserManager<AppUser> userManager, IAIClient aIClient, IJSRuntime js)
+        public ChatHub(IChatService chatService, ILogger<ChatHub> logger, UserManager<AppUser> userManager, IAIClient aIClient, IJSRuntime js, IAIChatHistoryRepo aiChatHistoryRepo)
         {
             _chatService = chatService;
             _logger = logger;
@@ -34,6 +36,7 @@ namespace API.Hubs
             _userManager = userManager;
             _aiClient = aIClient;
             _js = js;
+            _aiChatHistoryRepo = aiChatHistoryRepo;
         }
 
         public async Task SendPersonalMessage(string message)
@@ -105,7 +108,7 @@ namespace API.Hubs
             {
                 ConnectionId = Context.ConnectionId  
             });
-            await Clients.GroupExcept(groupName, Context.ConnectionId).SendAsync("ReceiveMessage", "System", $"{connectedUser.UserName} has joined the chat", Context.ConnectionId);
+            //await Clients.GroupExcept(groupName, Context.ConnectionId).SendAsync("ReceiveMessage", "System", $"{connectedUser.UserName} has joined the chat", Context.ConnectionId);
         }
 
         public async Task LeaveGroup(string groupName)
@@ -125,6 +128,12 @@ namespace API.Hubs
         //    await Clients.All.SendAsync("ReceiveMessage","System", "A user has left the chat.");
         //    await base.OnDisconnectedAsync(exception);
         //}
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            string connectionId = Context.ConnectionId;
+            await _aiChatHistoryRepo.DeleteHistory(connectionId);
+        }
 
         public async Task OnReconnectedAsync()
         {

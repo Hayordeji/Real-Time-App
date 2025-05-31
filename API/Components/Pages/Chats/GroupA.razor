@@ -253,11 +253,6 @@
         <div class="top-bar"></div>
         <div class="message-container">
             <div class="messages" aria-live="polite" aria-relevant="additions" role="log" tabindex="0">
-                <div class="message received" role="article" aria-label="Received message">
-                    <div>Hello! How are you doing today?</div>
-                    <div class="message-time">10:30 AM</div>
-                </div>
-
                 @foreach (var msg in messages)
                 {
                     @if (msg.userName != "You")
@@ -387,6 +382,7 @@
                     userMessage = "Reconnected Successfully",
                     userName = "System"
                 };
+            userConnectionId = hubConnection.ConnectionId;
             messages.Add(systemMessage);
             InvokeAsync(StateHasChanged);
             return Task.CompletedTask;
@@ -394,7 +390,13 @@
 
         hubConnection.Closed += async (error) =>
         {
-
+            await hubConnection.SendAsync("OnDisconnectedAsync", userConnectionId);
+            var systemMessage = new UserMessage
+                {
+                    userMessage = "Connection closed. Please refresh the page.",
+                    userName = "System"
+                };
+            await hubConnection.DisposeAsync();
         };
 
 
@@ -416,6 +418,7 @@
     {
         if (hubConnection is not null)
         {
+            await hubConnection.SendAsync("OnDisconnectedAsync", "Group A");
             await hubConnection.DisposeAsync();
         }
     }
