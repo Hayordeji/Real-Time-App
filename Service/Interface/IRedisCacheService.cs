@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Service.Interface
 {
-    public interface IAIClient
+    public interface IRedisCacheService
     {
-        Task<string> AskAI(string question, string connectionId);
+        Task<T?> GetData<T>(string key);
+        Task SetData<T>(string key, T value);
     }
 }

@@ -14,6 +14,8 @@ namespace Repository.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<AIChatHistory> AIChatHistories { get; set; }
+
         public DbSet<MessageReceipient> MessageReceipients { get; set; }
         //public DbSet<UserConnection> Notifications { get; set; }
 

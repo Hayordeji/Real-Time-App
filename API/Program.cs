@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
 using Repository.Data;
 using Repository.Implementation;
 using Repository.Interface;
@@ -23,17 +25,28 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
+builder.Services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IMessageRepo, MessageRepo>();
 builder.Services.AddScoped<IGroupRepo, GroupRepo>();
 builder.Services.AddScoped<IAIClient, AIClient>();
+builder.Services.AddSingleton<ChatHistory>();
+builder.Services.AddScoped<IRedisCacheService,RedisCacheService>();
+builder.Services.AddScoped<IAIChatHistoryRepo, AIChatHistoryRepo>();
+//builder.Services.AddScoped<IJSRuntime, JSRuntime>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddOpenAIChatCompletion("gpt-4.1-nano-2025-04-14", builder.Configuration["OpenAI:APIKey"]);
 
+builder.Services.AddStackExchangeRedisCache(option =>
+{
+    option.Configuration = builder.Configuration.GetConnectionString("Redis");
+    option.InstanceName = "redis-1";
+}); 
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

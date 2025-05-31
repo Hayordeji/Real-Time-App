@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Interface
+namespace Service.DTO.Message
 {
-    public interface IAIClient
+    public class ChatHistoryDto
     {
-        Task<string> AskAI(string question, string connectionId);
+       public List<ChatMessageDto> Messages { get; set; }
     }
 }
