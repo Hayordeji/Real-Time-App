@@ -24,3 +24,9 @@
 /Client/Properties/launchSettings.json
 /Client/appsettings.json
 /Client/appsettings.Development.json
+/bin/Debug
+/obj
+/launchSettings.json
+*.yml
+/docker-compose.dcproj
+/API/Dockerfile

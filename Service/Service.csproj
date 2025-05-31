@@ -11,7 +11,12 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.16" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.16" />
     <PackageReference Include="Microsoft.JSInterop" Version="8.0.16" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.54.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.54.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.37" />
   </ItemGroup>
 
   <ItemGroup>

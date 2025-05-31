@@ -405,7 +405,7 @@
 
     private async Task SendMessageToGroup()
     {
-        await hubConnection.SendAsync("SendMessageToGroup", sentMessage, "Group A");
+        await hubConnection.SendAsync("AskAIQuestion", sentMessage, "Group A");
         sentMessage = string.Empty;
         await InvokeAsync(StateHasChanged);
     }

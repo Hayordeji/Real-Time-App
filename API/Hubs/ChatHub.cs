@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +22,18 @@ namespace API.Hubs
         private readonly ILogger<ChatHub> _logger;
         private List<MessageReceipient> _receipients;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IAIClient _aiClient;
+        private readonly IJSRuntime _js;
+        
 
-        public ChatHub(IChatService chatService, ILogger<ChatHub> logger, UserManager<AppUser> userManager)
+        public ChatHub(IChatService chatService, ILogger<ChatHub> logger, UserManager<AppUser> userManager, IAIClient aIClient, IJSRuntime js)
         {
             _chatService = chatService;
             _logger = logger;
             _receipients = new List<MessageReceipient>();
             _userManager = userManager;
+            _aiClient = aIClient;
+            _js = js;
         }
 
         public async Task SendPersonalMessage(string message)
@@ -44,6 +52,29 @@ namespace API.Hubs
 
             //await _chatService.AddPersonalMessage(user, "ReceipientName", message);
             //await Clients.All.SendAsync("ReceiveMessage", user, message);
+        }
+
+        public async Task AskAIQuestion(string question, string chatName)
+        {
+            //Fetch username from JWT token
+            string? username = Context.UserIdentifier;
+            if (username == null) 
+            {
+                throw new Exception("User not found");
+            }
+            //check if user exists in the database
+            var connectedUser = await _userManager.FindByNameAsync(username);
+            //ASK AI THE QUESTION
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", connectedUser?.UserName, question, Context.ConnectionId);
+            _logger.LogInformation($"{username} asked the chatbot a question : {question}");
+
+            //GET RESPONSE FROM AI
+
+            var response = await _aiClient.AskAI(question, Context.ConnectionId);
+            _logger.LogInformation($"Chatbot response: {response}");
+
+            //SEND THE RESPONSE TO THE GROUP
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "System", response, "System Connection Id");
         }
 
         public async Task SendMessageToGroup(string message, string groupName)
