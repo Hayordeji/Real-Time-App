@@ -77,7 +77,7 @@ namespace API.Hubs
             _logger.LogInformation($"Chatbot response: {response}");
 
             //SEND THE RESPONSE TO THE GROUP
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "System", response, "System Connection Id");
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "Ayodeji", response, "System Connection Id");
         }
 
         public async Task SendMessageToGroup(string message, string groupName)

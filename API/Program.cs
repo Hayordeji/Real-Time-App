@@ -33,6 +33,7 @@ builder.Services.AddScoped<IMessageRepo, MessageRepo>();
 builder.Services.AddScoped<IGroupRepo, GroupRepo>();
 builder.Services.AddScoped<IAIClient, AIClient>();
 builder.Services.AddSingleton<ChatHistory>();
+builder.Services.AddKernel();
 builder.Services.AddScoped<IRedisCacheService,RedisCacheService>();
 builder.Services.AddScoped<IAIChatHistoryRepo, AIChatHistoryRepo>();
 //builder.Services.AddScoped<IJSRuntime, JSRuntime>();
