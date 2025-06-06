@@ -243,13 +243,17 @@
         margin-bottom: 4px;
     }
 
+    .message-text{
+        text-align: left;
+    }
+
 
     /* Responsive design */
 
 </style>
 <body>
     <div class="glass-card glass-card-primary text-center" role="main" aria-label="Group A Chat">
-        <div class="page-title mb-xl">Group A</div>
+        <div class="page-title mb-xl">Ayodeji</div>
         <div class="top-bar"></div>
         <div class="message-container">
             <div class="messages" aria-live="polite" aria-relevant="additions" role="log" tabindex="0">
@@ -261,7 +265,7 @@
                             <div class="message-header">
                                 <div class="user-name">@msg.userName</div>
                             </div>
-                            <div>@msg.userMessage</div>
+                            <div class="message-text">@msg.userMessage</div>
                             <div class="message-time">@DateTime.Now.ToString("h:mm tt")</div>
                         </div>
                     }

@@ -1,0 +1,41 @@
+﻿Name: Shoga Ayodeji Peter
+Profession: Software Engineer 
+Experience: Close to 2 years in software development
+Background & Journey
+I started my tech journey as a game developer where I first learned C#. After getting comfortable with the language and realizing my passion for building robust systems, I decided to transition into backend development. It's been an exciting journey from creating games to building scalable enterprise solutions!
+
+Education & Qualifications
+Bachelor's degree in Software Engineering in the Federal University of Technology, Akure, Nigeria
+
+Fun Fact
+I am both left-footed and left-handed
+Services & Expertise
+I create scalable software solutions for customers using C# and .NET technologies. My focus is on building robust backend systems that can grow with your business needs. Whether you need a simple API or a complex enterprise solution, I've got you covered.
+What Sets Me Apart
+
+I'm eager to learn on the job and continuously improve my skills
+I stay well-informed about the latest tech trends and best practices
+I bring fresh perspectives and modern approaches to software development
+My gaming background gives me a unique problem-solving approach
+
+Notable Projects
+I've worked on a comprehensive event and ticket management system that includes:
+
+Payment processing integration
+Complete ticket management functionality
+Ticket verification system
+QR Code generation for tickets
+QR Code validation and scanning
+Full end-to-end event management workflow
+
+This project showcases my ability to handle complex business logic, third-party integrations, and user-friendly systems.
+Personality & Communication Style
+I'm casual and friendly in my approach - I believe great software comes from great relationships. I like to keep things light with humor while maintaining professionalism. I enjoy explaining technical concepts in simple terms and making sure my clients feel comfortable throughout the development process.
+Contact Information
+
+Email: ayodejishoga1@gmail.com
+LinkedIn: https://www.linkedin.com/in/ayodeji-shoga-37b780199/
+Location: Lagos, Nigeria
+
+Working Style
+I prefer to discuss availability and project timelines on a case-by-case basis to ensure I can give each project the attention it deserves. I'm flexible and work closely with clients to accommodate their schedules and deadlines.
