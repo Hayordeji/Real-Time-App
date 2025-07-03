@@ -6,17 +6,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Qdrant.Client;
 using Repository.Data;
 using Repository.Implementation;
 using Repository.Interface;
+using Service.Helpers;
 using Service.Implementation;
 using Service.Interface;
 using System;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,8 +39,19 @@ builder.Services.AddScoped<IAIClient, AIClient>();
 builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddKernel();
 builder.Services.AddScoped<IRedisCacheService,RedisCacheService>();
+//builder.Services.AddScoped<IVectorService, VectorService>();
+builder.Services.AddScoped<IQdrantService, QdrantService>();
+builder.Services.AddScoped<IHttpClientService, HttpClientService>();
+builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 builder.Services.AddScoped<IAIChatHistoryRepo, AIChatHistoryRepo>();
-//builder.Services.AddScoped<IJSRuntime, JSRuntime>();
+builder.Services.AddSingleton<QdrantClient>(serviceProvider =>
+{
+    var config = serviceProvider.GetRequiredService<IOptions<QdrantConfig>>().Value;
+
+    var qdrantClient = new QdrantClient("localhost", 6334);
+
+    return qdrantClient;
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -119,17 +134,31 @@ builder.Services.AddResponseCompression(opts =>
         ["application/octet-stream"]);
 });
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy.AllowAnyOrigin()
-//              .AllowAnyMethod()
-//              .AllowAnyHeader();
-//    });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
+
+//TEST QDRANT
+using (var scope = app.Services.CreateScope())
+{
+    var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
+    var qdrantService = scope.ServiceProvider.GetRequiredService<IQdrantService>();
+
+    //await qdrantService.CreateCollection("TestCollectionAyodeji", 4);
+    var embedding = await embeddingService.CreateEmbedding("Berlin", 4);
+    await qdrantService.AddVectorsToCollection("TestCollectionAyodeji",embedding);
+    await qdrantService.SearchVector("TestCollectionAyodeji", new List<float> { 0.05f, 0.61f, 0.76f, 0.74f });
+
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
