@@ -35,15 +35,12 @@ namespace Service.Implementation
             var grpcClient = new QdrantGrpcClient(callInvoker);
         }
 
-        public async Task AddVectorsToCollection(string collectionName,OpenAIEmbeddingResponseDto embeddings)
+        public async Task AddVectorsToCollection(string collectionName,List<PointStruct> embeddings)
         {
             try
             {
-                var  mappedEmbedding = embeddings.ToEmbeddingStoreDto();
-                await _client.UpsertAsync(collectionName, mappedEmbedding);
-
-               
-
+                //var  mappedEmbedding = embeddings.ToEmbeddingStoreDto();
+                await _client.UpsertAsync(collectionName, embeddings);
             }
             catch (Exception)
             {
@@ -53,19 +50,21 @@ namespace Service.Implementation
             
         }
 
-        public async Task AddVectorsToCollection(string collectionName, List<OpenAIEmbeddingResponseDto> embeddings)
-        {
-            try
-            {
-                var mappedEmbeddings = embeddings.ToEmbeddingsStoreDto();
-                await _client.UpsertAsync(collectionName, mappedEmbeddings);
-            }
-            catch (Exception)
-            {
+        
 
-                throw;
-            }
-        }
+        //public async Task AddVectorsToCollection(string collectionName, List<PointStruct> embeddings)
+        //{
+        //    try
+        //    {
+        //        var mappedEmbeddings = embeddings.ToEmbeddingsStoreDto();
+        //        await _client.UpsertAsync(collectionName, mappedEmbeddings);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
 
         public async Task<bool> CreateCollection(string collectionName, uint vectorSize)
         {

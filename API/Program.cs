@@ -18,6 +18,7 @@ using Repository.Interface;
 using Service.Helpers;
 using Service.Implementation;
 using Service.Interface;
+using Service.Mapper;
 using System;
 using System.Text;
 using static System.Net.WebRequestMethods;
@@ -152,18 +153,21 @@ using (var scope = app.Services.CreateScope())
     var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
     var qdrantService = scope.ServiceProvider.GetRequiredService<IQdrantService>();
     ////CREATE COLLECTION
-    //await qdrantService.CreateCollection("TestCollectionSarahChen", 4);
+    await qdrantService.CreateCollection("TestCollectionSarahChen", 4);
 
     ////CHUNT TEXT
-    //List<string> texts = await embeddingService.ChunkText();
+    List<string> texts = await embeddingService.ChunkText();
     ////CREATE EMBEDDING
-    //var embedding = await embeddingService.CreateEmbeddings(texts, 4);
+    var embedding = await embeddingService.CreateEmbeddings(texts, 4);
 
     ////ADD VECTORS
-    //await qdrantService.AddVectorsToCollection("TestCollectionSarahChen",embedding);
+    await qdrantService.AddVectorsToCollection("TestCollectionSarahChen",embedding);
 
+    //EMBED USER QUERY
+    var embeddingResponse = await embeddingService.CreateQueryEmbedding("How many siblings does sarah have?", 4);
+    //var embedding = embeddingResponse.ToEmbeddingQueryDto();
     //SEARCH VECTORS
-    await qdrantService.SearchVector("TestCollectionSarahChen", new List<float> { 0.05f, 0.61f, 0.76f, 0.74f });
+    await qdrantService.SearchVector("TestCollectionSarahChen", embeddingResponse);
 
 }
 

@@ -1,4 +1,5 @@
-﻿using LangChain.Splitters.Text;
+﻿using LangChain.Providers;
+using LangChain.Splitters.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Qdrant.Client.Grpc;
@@ -69,11 +70,11 @@ namespace Service.Implementation
             return chunks.ToList();
         }
 
-        public async Task<List<OpenAIEmbeddingResponseDto>> CreateEmbeddings(List<string> texts, int dimensions)
+        public async Task<List<PointStruct>> CreateEmbeddings(List<string> texts, int dimensions)
         {
             try
             {
-                List<OpenAIEmbeddingResponseDto> responses = new List<OpenAIEmbeddingResponseDto>();
+                List<PointStruct> points = new List<PointStruct>();
                 foreach (string text in texts)
                 {
                     
@@ -93,10 +94,46 @@ namespace Service.Implementation
                     //READ THE RESPONSE CONTENT
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var deserializedReponse = JsonConvert.DeserializeObject<OpenAIEmbeddingResponseDto>(responseContent);
-                    responses.Add(deserializedReponse);
+
+                    var embedding = deserializedReponse.ToEmbeddingStoreDto(text);
+                    points.Add(embedding);
                 }
 
-                return responses;
+                return points;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error in CreateEmbedding", ex);
+            }
+        }
+
+        public async Task<List<float>> CreateQueryEmbedding(string query, int dimensions)
+        {
+            try
+            {
+                OpenAIEmbeddingResponseDto response = new OpenAIEmbeddingResponseDto();
+                
+                //CREATE TEH REQUEST BODY
+                var data = new EmbeddingCreateDto()
+                {
+                    input = query,
+                    model = "text-embedding-3-small",
+                    dimensions = dimensions
+                };
+
+                //SET THE AUTHORIZATION HEADER
+                _httpClient.SetAuthorizationHeader("bearer", $"{_config["OpenAI:APIKey"]}");
+                var result = await _httpClient.PostAsync<EmbeddingCreateDto>("https://api.openai.com/v1/embeddings", data);
+                result.EnsureSuccessStatusCode();
+
+                //READ THE RESPONSE CONTENT
+                var responseContent = await result.Content.ReadAsStringAsync();
+                var deserializedReponse = JsonConvert.DeserializeObject<OpenAIEmbeddingResponseDto>(responseContent);
+
+                var embedding = deserializedReponse.ToEmbeddingQueryDto();
+
+                return embedding;
 
             }
             catch (Exception ex)
