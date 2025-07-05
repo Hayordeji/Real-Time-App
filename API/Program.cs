@@ -151,11 +151,19 @@ using (var scope = app.Services.CreateScope())
 {
     var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
     var qdrantService = scope.ServiceProvider.GetRequiredService<IQdrantService>();
+    ////CREATE COLLECTION
+    //await qdrantService.CreateCollection("TestCollectionSarahChen", 4);
 
-    //await qdrantService.CreateCollection("TestCollectionAyodeji", 4);
-    var embedding = await embeddingService.CreateEmbedding("Berlin", 4);
-    await qdrantService.AddVectorsToCollection("TestCollectionAyodeji",embedding);
-    await qdrantService.SearchVector("TestCollectionAyodeji", new List<float> { 0.05f, 0.61f, 0.76f, 0.74f });
+    ////CHUNT TEXT
+    //List<string> texts = await embeddingService.ChunkText();
+    ////CREATE EMBEDDING
+    //var embedding = await embeddingService.CreateEmbeddings(texts, 4);
+
+    ////ADD VECTORS
+    //await qdrantService.AddVectorsToCollection("TestCollectionSarahChen",embedding);
+
+    //SEARCH VECTORS
+    await qdrantService.SearchVector("TestCollectionSarahChen", new List<float> { 0.05f, 0.61f, 0.76f, 0.74f });
 
 }
 

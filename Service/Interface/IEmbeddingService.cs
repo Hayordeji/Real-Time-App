@@ -10,7 +10,9 @@ namespace Service.Interface
     public interface IEmbeddingService
     {
         Task<OpenAIEmbeddingResponseDto> CreateEmbedding(string text, int dimensions);
-        Task<OpenAIEmbeddingResponseDto> CreateEmbedding(List<string> texts, int dimensions);
+        Task<List<OpenAIEmbeddingResponseDto>> CreateEmbeddings(List<string> texts, int dimensions);
+        Task<List<string>> ChunkText();
+
 
     }
 }

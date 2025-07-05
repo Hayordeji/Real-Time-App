@@ -27,7 +27,7 @@ namespace Service.Implementation
         public async Task<OpenAIEmbeddingResponseDto> CreateEmbedding(string text, int dimensions)
         {
             try
-            {HasVectorCondition      
+            {      
                 //CREATE TEH REQUEST BODY
                 var data = new EmbeddingCreateDto()
                 {
@@ -53,19 +53,23 @@ namespace Service.Implementation
            
         }
 
-        public async Task<List<string>> ChunkText(string text)
+        public async Task<List<string>> ChunkText()
         {
+
+            string filePath = "C:\\Users\\ayode\\source\\repos\\AI_Chatbot\\Service\\Helpers\\MockDataSarahChen.txt";
+            string data = File.ReadAllText(filePath);
+
             var textSplitter = new RecursiveCharacterTextSplitter(
-            chunkSize: 1000,
+            chunkSize: 450,
             chunkOverlap: 200,
             separators: new[] { "\n\n", "\n", " ", "" }
             );
 
-            var chunks = textSplitter.SplitText(text);
+            var chunks = textSplitter.SplitText(data);
             return chunks.ToList();
         }
 
-        public async Task<List<OpenAIEmbeddingResponseDto>> CreateEmbedding(List<string> texts, int dimensions)
+        public async Task<List<OpenAIEmbeddingResponseDto>> CreateEmbeddings(List<string> texts, int dimensions)
         {
             try
             {

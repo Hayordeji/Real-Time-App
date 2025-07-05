@@ -59,7 +59,6 @@ namespace Service.Implementation
             {
                 var mappedEmbeddings = embeddings.ToEmbeddingsStoreDto();
                 await _client.UpsertAsync(collectionName, mappedEmbeddings);
-
             }
             catch (Exception)
             {
@@ -97,7 +96,7 @@ namespace Service.Implementation
             var points = await _client.SearchAsync(
               collectionName,
               queryVector,
-              limit: 1);
+              limit: 5);
 
         }
 
