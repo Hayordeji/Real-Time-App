@@ -14,7 +14,7 @@ namespace Service.Interface
         Task AddVectorsToCollection(string collectionName, List<PointStruct> embeddings);
         //Task AddVectorsToCollection(string collectionName, List<OpenAIEmbeddingResponseDto> embeddings);
 
-        Task SearchVector (string collectionName, List<float> vector, int limit = 5);
+        Task<List<string>> SearchVector (string collectionName, List<float> vector, int limit = 5);
 
     }
 }

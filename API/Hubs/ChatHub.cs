@@ -73,7 +73,7 @@ namespace API.Hubs
 
             //GET RESPONSE FROM AI
 
-            var response = await _aiClient.AskAI(question, Context.ConnectionId);
+            var response = await _aiClient.AskAIRemastered(question, Context.ConnectionId);
             _logger.LogInformation($"Chatbot response: {response}");
 
             //SEND THE RESPONSE TO THE GROUP

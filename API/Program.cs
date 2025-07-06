@@ -147,27 +147,27 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-//TEST QDRANT
+//INITIALIZE QDRANT AND EMBEDDING SERVICES
 using (var scope = app.Services.CreateScope())
 {
     var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
     var qdrantService = scope.ServiceProvider.GetRequiredService<IQdrantService>();
-    ////CREATE COLLECTION
-    await qdrantService.CreateCollection("TestCollectionSarahChen", 4);
 
-    ////CHUNT TEXT
-    List<string> texts = await embeddingService.ChunkText();
-    ////CREATE EMBEDDING
-    var embedding = await embeddingService.CreateEmbeddings(texts, 4);
+    //CREATE COLLECTION
+    //await qdrantService.CreateCollection("TestCollectionSarahChen", 64);
 
-    ////ADD VECTORS
-    await qdrantService.AddVectorsToCollection("TestCollectionSarahChen",embedding);
+    //CHUNT TEXT
+    //List<string> texts = await embeddingService.ChunkText();
+    //CREATE EMBEDDING
+    //var embedding = await embeddingService.CreateEmbeddings(texts, 64);
+
+    //ADD VECTORS
+    //await qdrantService.AddVectorsToCollection("TestCollectionSarahChen", embedding);
 
     //EMBED USER QUERY
-    var embeddingResponse = await embeddingService.CreateQueryEmbedding("How many siblings does sarah have?", 4);
-    //var embedding = embeddingResponse.ToEmbeddingQueryDto();
+    //var embeddingResponse = await embeddingService.CreateQueryEmbedding("Sarah interest and hobbies", 64);
     //SEARCH VECTORS
-    await qdrantService.SearchVector("TestCollectionSarahChen", embeddingResponse);
+    //var searchResult = await qdrantService.SearchVector("TestCollectionSarahChen", embeddingResponse);
 
 }
 

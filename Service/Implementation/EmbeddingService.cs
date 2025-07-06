@@ -61,8 +61,8 @@ namespace Service.Implementation
             string data = File.ReadAllText(filePath);
 
             var textSplitter = new RecursiveCharacterTextSplitter(
-            chunkSize: 450,
-            chunkOverlap: 200,
+            chunkSize: 500,
+            chunkOverlap: 150,
             separators: new[] { "\n\n", "\n", " ", "" }
             );
 

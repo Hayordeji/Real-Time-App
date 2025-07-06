@@ -86,7 +86,7 @@ namespace Service.Implementation
             
         }
 
-        public async Task SearchVector(string collectionName, List<float> vector, int limit = 5)
+        public async Task<List<string>> SearchVector(string collectionName, List<float> vector, int limit)
         {
             float[] vectorArray = vector.ToArray(); // Convert List<float> to ReadOnlyMemory<float>
             ReadOnlyMemory<float> queryVector = vectorArray;
@@ -95,8 +95,16 @@ namespace Service.Implementation
             var points = await _client.SearchAsync(
               collectionName,
               queryVector,
-              limit: 5);
+              limit : (ulong)limit,
+              scoreThreshold : 0.3f // Optional: Set a score threshold for filtering results
+              );
+            List<string> texts = new List<string>();
+            foreach (ScoredPoint point in points)
+            {
+                texts.Add(point.Payload["text"].StringValue);
+            }
 
+            return texts;
         }
 
 
