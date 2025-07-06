@@ -100,7 +100,7 @@ namespace Service.Implementation
         {
             string filePath = "C:\\Users\\ayode\\source\\repos\\AI_Chatbot\\Service\\Helpers\\GenericPrompt2.txt";
             string fileContent =await File.ReadAllTextAsync(filePath);
-            string updatedContent = fileContent.Replace("{customerDetails}", data);
+            string updatedContent = fileContent.Replace("{context}", data);
              return updatedContent;
         }
     } 
